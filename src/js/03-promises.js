@@ -19,18 +19,18 @@ function createPromise(position, delay) {
 
 function onSubmit(e) {
   e.preventDefault();
-  const delay = Number(e.target.elements.delay.value);
+  let delay = Number(e.target.elements.delay.value);
   const step = Number(e.target.elements.step.value);
   const amount = Number(e.target.elements.amount.value);
 
-  for (let i = 0; i <= amount; i += 1) {
-    const currentDelay = delay + step * (i - 1);
-    createPromise(i, currentDelay)
+  for (let i = 1; i <= amount; i += 1) {
+    createPromise(i, delay)
     .then(({ position, delay }) => {
       Notiflix.Notify.success(`✅ Fulfilled promise ${position} in ${delay}ms`);
     })
     .catch(({ position, delay }) => {
       Notiflix.Notify.failure(`❌ Rejected promise ${position} in ${delay}ms`);
     });
+    delay += step;
   }
 }

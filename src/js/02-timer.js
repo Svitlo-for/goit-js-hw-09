@@ -3,14 +3,14 @@ import "flatpickr/dist/flatpickr.min.css";
 import Notiflix from 'notiflix';
 
 const inputPicker = document.getElementById("datetime-picker");
-const startBtn = document.querySelector("input[data-start]");
+const startBtn = document.querySelector("[data-start]");
 
 const timerDays = document.querySelector("span[data-days]");
 const timerHours = document.querySelector("span[data-hours]");
 const timerMinutes = document.querySelector("span[data-minutes]");
 const timerSeconds = document.querySelector("span[data-seconds]");
 
-
+let selectedDate = null;
 
 const options = {
     enableTime: true,
@@ -20,7 +20,8 @@ const options = {
     onClose(selectedDates) {
       console.log(selectedDates[0]);
       const currentTime = new Date();
-      if (selectedDates[0].getTime() < currentTime) {
+      selectedDate = selectedDates[0];
+      if (selectedDate < currentTime) {
         Notiflix.Notify.warning('Please choose a date in the future');
         startBtn.disabled = true;
         return;
@@ -39,19 +40,19 @@ function timerClick() {
   startBtn.disabled = true;
 
   function newCounter() {
-    const dateInput = new Date.getTime();
-    const requiredTime = selectedDates[0] - dateInput;
+    const dateInput = new Date();
+    const requiredTime = selectedDate - dateInput;
 
-    if (requiredTime <= 0) {
-      clearInterval(counter);
-      startBtn.disabled = false;
-    } else {
+    if (requiredTime > 0) {
       const {days, hours, minutes, seconds} = convertMs(requiredTime);
 
       timerDays.textContent = addLeadingZero(days);
       timerHours.textContent = addLeadingZero(hours);
       timerMinutes.textContent = addLeadingZero(minutes);
       timerSeconds.textContent = addLeadingZero(seconds);
+    } else {
+      clearInterval(counter);
+      startBtn.disabled = false;
     }
   }
 }
